@@ -1,21 +1,24 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Saved Images</title>
+    <title>Show Local Image</title>
     <style>
       body {
         font-family: Arial, sans-serif;
+        text-align: center;
+        margin: 0;
         padding: 10px;
       }
       img {
-        max-width: 100%;
-        margin-bottom: 10px;
+        width: 360px;
+        height: auto;
+        border-radius: 2px;
+        margin: 10px;
       }
     </style>
   </head>
   <body>
-    <h2>Saved Images</h2>
-    <div id="images"></div>
-    <script src="popup.js"></script>
+    <h2>You:</h2>
+    <img id="profile-image" src="profile.jpg" alt="Profile Image" />
   </body>
 </html>
