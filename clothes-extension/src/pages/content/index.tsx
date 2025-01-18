@@ -1,6 +1,11 @@
 import { createRoot } from "react-dom/client";
+import { Client } from "@gradio/client";
 import "./style.css";
 
+// Init gradio
+const app = await Client.connect("yisol/IDM-VTON");
+
+// Init content insertion
 const div = document.createElement("div");
 div.id = "__root";
 document.body.appendChild(div);
@@ -91,28 +96,22 @@ document.addEventListener(
       const img = target as HTMLImageElement;
       const imageSrc = img.currentSrc;
 
-      console.log(imageSrc);
-      return;
+      const profile = await fetch(
+        "https://raw.githubusercontent.com/ccs-cs1l-f24/clothes/refs/heads/main/clothes-extension/public/dev-icon-32.png"
+      );
+      const garment = await fetch(imageSrc);
 
-      try {
-        // Call API with the image source
-        const response = await fetch("https://your-api-url.com", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ imageUrl: imageSrc }),
-        });
+      const result = await app.predict("/tryon", [
+        { background: profile.blob(), layers: [], composite: null },
+        garment.blob(), // blob in 'Garment' Image component
+        "", // string  description of the garment
+        true, // boolean  use auto mask
+        true, // boolean  use auto resize and crop
+        30, // number  in 'Denoising Steps' Number component
+        42, // number  in 'Seed' Number component
+      ]);
 
-        if (!response.ok) {
-          throw new Error(`API request failed with status ${response.status}`);
-        }
-
-        const result = await response.json();
-        console.log("API response:", result);
-      } catch (err) {
-        console.error("API request failed:", err);
-      }
+      console.log(result);
     } else {
       // Disable selection mode if clicking anything other than an image
       selectionMode = false;
