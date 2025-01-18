@@ -2,9 +2,6 @@ import { createRoot } from "react-dom/client";
 import { Client } from "@gradio/client";
 import "./style.css";
 
-// Init gradio
-const app = await Client.connect("yisol/IDM-VTON");
-
 // Init content insertion
 const div = document.createElement("div");
 div.id = "__root";
@@ -97,9 +94,15 @@ document.addEventListener(
       const imageSrc = img.currentSrc;
 
       const profile = await fetch(
-        "https://raw.githubusercontent.com/ccs-cs1l-f24/clothes/refs/heads/main/clothes-extension/public/dev-icon-32.png"
+        "https://raw.githubusercontent.com/ccs-cs1l-f24/clothes/refs/heads/main/clothes-extension/public/profile.jpg"
       );
+
+      // for no-cors workaround, we can download to disk first?
+      // https://stackoverflow.com/questions/2153979/chrome-extension-how-to-save-a-file-on-disk
       const garment = await fetch(imageSrc);
+
+      // Init gradio
+      const app = await Client.connect("yisol/IDM-VTON");
 
       const result = await app.predict("/tryon", [
         { background: profile.blob(), layers: [], composite: null },
