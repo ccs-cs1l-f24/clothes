@@ -1,6 +1,29 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-.your-class {
-    color: aliceblue;
+
+.extension-frame {
+    all: initial;
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
 }
+
+#selection-button {
+    width: 56px; /* Explicit width */
+    height: 56px; /* Explicit height */
+    border: none; /* Remove any border styles */
+    margin: 0; /* Reset margin */
+    padding: 0; /* Reset padding */
+    box-sizing: border-box; /* Use border-box sizing */
+    display: flex; /* Ensure correct alignment */
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%; /* Ensure circular shape */
+    background-color: #ccc; /* Default background color */
+    position: fixed; /* Ensure it's fixed in place */
+    bottom: 16px; /* Distance from bottom */
+    right: 16px; /* Distance from right */
+    z-index: 9999; /* Ensure it's on top of other elements */
+    cursor: pointer; /* Pointer cursor for interactivity */
+  }
