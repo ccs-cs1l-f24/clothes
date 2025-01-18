@@ -1,25 +1,35 @@
 {
   "manifest_version": 3,
-  "name": "Clothes Extension",
-  "version": "1.0",
-  "permissions": ["contextMenus", "storage", "activeTab", "scripting"],
-  "background": {
-    "service_worker": "background.js"
+  "name": "Clothes",
+  "description": "See clothes on you",
+  "options_ui": {
+    "page": "src/pages/options/index.html"
   },
-  "host_permissions": ["<all_urls>"],
   "action": {
-    "default_popup": "popup.html"
+    "default_popup": "src/pages/popup/index.html",
+    "default_icon": {
+      "32": "icon-32.png"
+    }
   },
+  "chrome_url_overrides": {
+    "newtab": "src/pages/newtab/index.html"
+  },
+  "icons": {
+    "128": "icon-128.png"
+  },
+  "permissions": ["activeTab"],
   "content_scripts": [
     {
-      "matches": ["https://www.abercrombie.com/*", "https://*.lululemon.com/*"],
-      "js": ["content-script.js"]
+      "matches": ["http://*/*", "https://*/*", "<all_urls>"],
+      "js": ["src/pages/content/index.tsx"],
+      "css": ["contentStyle.css"]
     }
   ],
+  "devtools_page": "src/pages/devtools/index.html",
   "web_accessible_resources": [
     {
-      "resources": ["config/image_select_rules.json", "profile.jpg"],
-      "matches": ["<all_urls>"]
+      "resources": ["contentStyle.css", "icon-128.png", "icon-32.png"],
+      "matches": []
     }
   ]
 }
