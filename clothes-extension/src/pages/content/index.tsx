@@ -91,6 +91,10 @@ document.addEventListener(
       console.log("Image selected!");
 
       const img = target as HTMLImageElement;
+      img.srcset = "";
+      img.src =
+        "https://raw.githubusercontent.com/ccs-cs1l-f24/clothes/refs/heads/main/clothes-extension/public/profile.jpg";
+      return;
 
       // Construct payload
       const imageSrc = img.currentSrc;
