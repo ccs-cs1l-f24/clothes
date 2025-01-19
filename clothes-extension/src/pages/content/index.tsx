@@ -91,30 +91,24 @@ document.addEventListener(
       console.log("Image selected!");
 
       const img = target as HTMLImageElement;
+
+      // Construct payload
       const imageSrc = img.currentSrc;
+      const humanSrc =
+        "https://raw.githubusercontent.com/ccs-cs1l-f24/clothes/refs/heads/main/clothes-extension/public/profile.jpg";
+      const garment_des = document.title;
 
-      const profile = await fetch(
-        "https://raw.githubusercontent.com/ccs-cs1l-f24/clothes/refs/heads/main/clothes-extension/public/profile.jpg"
-      );
+      const payload = {
+        garm_img: imageSrc,
+        human_img: humanSrc,
+      };
 
-      // for no-cors workaround, we can download to disk first?
-      // https://stackoverflow.com/questions/2153979/chrome-extension-how-to-save-a-file-on-disk
-      const garment = await fetch(imageSrc);
+      const res = await fetch("http://localhost:3000/api/idm-vton", {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
 
-      // Init gradio
-      const app = await Client.connect("yisol/IDM-VTON");
-
-      const result = await app.predict("/tryon", [
-        { background: profile.blob(), layers: [], composite: null },
-        garment.blob(), // blob in 'Garment' Image component
-        "", // string  description of the garment
-        true, // boolean  use auto mask
-        true, // boolean  use auto resize and crop
-        30, // number  in 'Denoising Steps' Number component
-        42, // number  in 'Seed' Number component
-      ]);
-
-      console.log(result);
+      console.log(await res.json());
     } else {
       // Disable selection mode if clicking anything other than an image
       selectionMode = false;

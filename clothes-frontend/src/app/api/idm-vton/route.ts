@@ -62,7 +62,7 @@ export async function POST(req: Request) {
   const blob = await data.blob();
   const arrayBuffer = await blob.arrayBuffer();
 
-  await writeFile("output.jpg", Buffer.from(arrayBuffer), (err) => {
+  await writeFile("output/output.jpg", Buffer.from(arrayBuffer), (err) => {
     throw err;
   });
 
