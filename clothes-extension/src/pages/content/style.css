@@ -9,6 +9,21 @@
     right: 1rem;
 }
 
+.overlay-frame {
+    all: initial; /* Resets all styles */
+    display: flex; /* Ensures the element is displayed */
+    justify-content: center; /* Centers the image horizontally */
+    align-items: center; /* Centers the image vertically */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.3); /* Semi-transparent background */
+    z-index: 1000; /* Make sure it appears above other elements */
+    visibility: visible; /* Ensure it's visible */
+}
+
 #selection-button {
     width: 56px; /* Explicit width */
     height: 56px; /* Explicit height */
