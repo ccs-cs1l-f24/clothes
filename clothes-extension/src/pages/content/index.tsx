@@ -61,6 +61,7 @@ overlayRoot.render(
       src="https://raw.githubusercontent.com/ccs-cs1l-f24/clothes/refs/heads/main/clothes-extension/public/loading.gif"
       alt="Profile"
       style={{ maxWidth: "90%", maxHeight: "90%", borderRadius: "8px" }}
+      id="overlay-image"
     />
   </div>
 );
@@ -92,6 +93,9 @@ document.addEventListener(
   "click",
   async (e: MouseEvent) => {
     const overlayFrame = document.getElementById("overlay-frame");
+    const overlayImage = document.getElementById(
+      "overlay-image"
+    ) as HTMLImageElement;
     if (overlayFrame) overlayFrame.style.display = "none";
 
     if (!selectionMode) return;
@@ -124,19 +128,26 @@ document.addEventListener(
         human_img: humanSrc,
       };
 
-      // Make the frame visible
-      if (overlayFrame) {
-        overlayFrame.style.display = "flex";
-        console.log("Making visible");
+      if (!overlayFrame || !overlayImage) {
+        console.error("Can't find overlay frame or image");
+        return;
       }
 
-      return;
+      // Make the frame visible
+      overlayFrame.style.display = "flex";
+
       const res = await fetch("http://localhost:3000/api/idm-vton", {
         method: "POST",
         body: JSON.stringify(payload),
       });
 
-      console.log(await res.json());
+      const data = await res.json();
+      console.log(data);
+
+      // Set the overlay image dataURL
+      const dataURL = data.dataURL;
+      console.log(dataURL);
+      if (dataURL) overlayImage.src = dataURL;
     }
   },
   true
