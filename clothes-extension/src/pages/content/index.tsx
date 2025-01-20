@@ -2,24 +2,25 @@ import { createRoot } from "react-dom/client";
 import { Client } from "@gradio/client";
 import "./style.css";
 
-// Init content insertion
-const tryButtonRoot = document.createElement("div");
-tryButtonRoot.id = "__root";
-document.body.appendChild(tryButtonRoot);
-const imageOverlayRoot = document.createElement("div");
-imageOverlayRoot.id = "__image_root";
-document.body.appendChild(imageOverlayRoot);
+// Selection Button Root
+const div = document.createElement("div");
+div.id = "__root_select_button";
+document.body.appendChild(div);
 
-const rootContainer = document.querySelector("#__root");
+const rootContainer = document.querySelector("#__root_select_button");
 if (!rootContainer) throw new Error("Can't find Content root element");
-const overalayRootContainer = document.querySelector("#__image_root");
-if (!overalayRootContainer) throw new Error("Can't find Content root element");
 const root = createRoot(rootContainer);
-const overlayRoot = createRoot(overalayRootContainer);
 
-// State variables
-let selectionMode = false;
-let viewImageOverlay = false;
+// Overlay Root
+const overlayDiv = document.createElement("div");
+overlayDiv.id = "__root_overlay";
+document.body.appendChild(overlayDiv);
+
+const overlayRootContainer = document.querySelector("#__root_overlay");
+if (!overlayRootContainer) throw new Error("Can't find Content root element");
+const overlayRoot = createRoot(overlayRootContainer);
+
+let selectionMode = false; // Tracks if selection mode is active
 
 // Add hover indicator
 const addHoverEffect = (img: HTMLImageElement) => {
@@ -54,15 +55,15 @@ root.render(
   </div>
 );
 
-// overlayRoot.render(
-//   <div className={`overlay-frame ${viewImageOverlay ? "block" : "hidden"}`}>
-//     <img
-//       src="https://raw.githubusercontent.com/ccs-cs1l-f24/clothes/refs/heads/main/clothes-extension/public/profile.jpg"
-//       alt="Profile"
-//       style={{ maxWidth: "90%", maxHeight: "90%", borderRadius: "8px" }}
-//     />
-//   </div>
-// );
+overlayRoot.render(
+  <div className={`overlay-frame`} id="overlay-frame">
+    <img
+      src="https://raw.githubusercontent.com/ccs-cs1l-f24/clothes/refs/heads/main/clothes-extension/public/loading.gif"
+      alt="Profile"
+      style={{ maxWidth: "90%", maxHeight: "90%", borderRadius: "8px" }}
+    />
+  </div>
+);
 
 // Attach event listeners to handle selection mode
 document.addEventListener("mouseover", (e: MouseEvent) => {
@@ -87,50 +88,56 @@ document.addEventListener("mouseout", (e: MouseEvent) => {
   }
 });
 
-document.addEventListener("click", async (e: MouseEvent) => {
-  if (!selectionMode) return;
+document.addEventListener(
+  "click",
+  async (e: MouseEvent) => {
+    const overlayFrame = document.getElementById("overlay-frame");
+    if (overlayFrame) overlayFrame.style.display = "none";
 
-  const target = e.target as HTMLElement | null;
+    if (!selectionMode) return;
 
-  // Prevent default and stop propagation for all events
-  e.preventDefault();
-  e.stopImmediatePropagation();
+    const target = e.target as HTMLElement | null;
 
-  if (target && target.tagName === "IMG") {
-    selectionMode = false; // Exit selection mode
-    const button = document.getElementById("selection-button");
-    if (button) {
-      button.style.backgroundColor = "#ccc"; // Reset button color
+    // Prevent default and stop propagation for all events
+    e.preventDefault();
+    e.stopImmediatePropagation();
+
+    if (target && target.tagName === "IMG") {
+      selectionMode = false; // Exit selection mode
+      const button = document.getElementById("selection-button");
+      if (button) {
+        button.style.backgroundColor = "#ccc"; // Reset button color
+      }
+
+      console.log("Image selected!");
+
+      const img = target as HTMLImageElement;
+
+      // Construct payload
+      const imageSrc = img.currentSrc;
+      const humanSrc =
+        "https://raw.githubusercontent.com/ccs-cs1l-f24/clothes/refs/heads/main/clothes-extension/public/profile.jpg";
+      const garment_des = document.title;
+
+      const payload = {
+        garm_img: imageSrc,
+        human_img: humanSrc,
+      };
+
+      // Make the frame visible
+      if (overlayFrame) {
+        overlayFrame.style.display = "flex";
+        console.log("Making visible");
+      }
+
+      return;
+      const res = await fetch("http://localhost:3000/api/idm-vton", {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
+
+      console.log(await res.json());
     }
-
-    console.log("Image selected!");
-
-    const img = target as HTMLImageElement;
-
-    // Construct payload
-    const imageSrc = img.currentSrc;
-    const humanSrc =
-      "https://raw.githubusercontent.com/ccs-cs1l-f24/clothes/refs/heads/main/clothes-extension/public/profile.jpg";
-    const garment_des = document.title;
-
-    const payload = {
-      garm_img: imageSrc,
-      human_img: humanSrc,
-    };
-
-    const res = await fetch("http://localhost:3000/api/idm-vton", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    });
-
-    console.log(await res.json());
-  } else {
-    // Disable selection mode if clicking anything other than an image
-    selectionMode = false;
-    const button = document.getElementById("selection-button");
-    if (button) {
-      button.style.backgroundColor = "#ccc"; // Reset button color
-    }
-    console.log("Selection mode disabled.");
-  }
-}); // Use the capturing phase to intercept all clicks
+  },
+  true
+); // Use the capturing phase to intercept all clicks

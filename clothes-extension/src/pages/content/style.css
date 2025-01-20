@@ -11,9 +11,9 @@
 
 .overlay-frame {
     all: initial; /* Resets all styles */
-    display: flex; /* Ensures the element is displayed */
-    justify-content: center; /* Centers the image horizontally */
-    align-items: center; /* Centers the image vertically */
+    display: none;
+    justify-content: center; 
+    align-items: center; 
     position: fixed;
     top: 0;
     left: 0;
@@ -21,7 +21,6 @@
     height: 100vh;
     background: rgba(0, 0, 0, 0.3); /* Semi-transparent background */
     z-index: 1000; /* Make sure it appears above other elements */
-    visibility: visible; /* Ensure it's visible */
 }
 
 #selection-button {
