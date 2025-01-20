@@ -126,6 +126,7 @@ document.addEventListener(
       const payload = {
         garm_img: imageSrc,
         human_img: humanSrc,
+        garment_des: document.title,
       };
 
       if (!overlayFrame || !overlayImage) {
